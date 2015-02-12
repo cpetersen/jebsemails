@@ -3,6 +3,7 @@ package io.petersen
 import com.pff.{ PSTObject, PSTFolder, PSTMessage }
 import java.util.Vector
 import scala.util.control.NonFatal
+import scala.collection.immutable.StringOps
 
 class IteratorWrapper[A](iter:java.util.Iterator[A]) {
   def foreach(f: A => Unit): Unit = {
@@ -36,6 +37,7 @@ class Processor(val folder : PSTFolder) {
   }
 
   def printEmails(folder : PSTFolder, depth : Int) {
+    val Pattern = "(\\s*-+Original Message-+\\s*)".r
     var count : Int = 1
     if(folder.getContentCount() > 0) {
       var email : PSTMessage = folder.getNextChild().asInstanceOf[PSTMessage]
@@ -50,7 +52,18 @@ class Processor(val folder : PSTFolder) {
 
         // PRINT BODIES
         if(email.getSenderEmailAddress() == "jeb@jeb.org") {
-          println(email.getBody())
+          var print = true
+          val stringOps = new StringOps(email.getBody())
+          for(line <- stringOps.lines) {
+            line match {
+              case Pattern(c) => print = false
+              case _ => {
+                if(print) {
+                  println(line)
+                }
+              }
+            }
+          }
         }
         try {
           email = folder.getNextChild().asInstanceOf[PSTMessage]
