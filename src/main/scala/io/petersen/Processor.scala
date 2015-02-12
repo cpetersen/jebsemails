@@ -20,8 +20,8 @@ class Processor(val folder : PSTFolder) {
   def processFolder(folder : PSTFolder, depth : Int) {
     // the root folder doesn't have a display name
     if(depth > 0) {
-      printDepth(depth)
-      println(folder.getDisplayName())
+      // printDepth(depth)
+      // println(folder.getDisplayName())
     }
 
     // go through the folders...
@@ -40,16 +40,23 @@ class Processor(val folder : PSTFolder) {
     if(folder.getContentCount() > 0) {
       var email : PSTMessage = folder.getNextChild().asInstanceOf[PSTMessage]
       while (email != null) {
-        printDepth(depth)
+        // ORIGINAL
+        // printDepth(depth)
         // println("From: "+email.getSubject())
-        println("Email: "+email.getSenderEmailAddress())
         // println(email.getBody())
+
+        // FIND EMAILS
+        // println(email.getSenderEmailAddress())
+
+        // PRINT BODIES
+        if(email.getSenderEmailAddress() == "jeb@jeb.org") {
+          println(email.getBody())
+        }
         try {
           email = folder.getNextChild().asInstanceOf[PSTMessage]
         } catch {
           case NonFatal(exc) => {
-            printDepth(depth)
-            println("Error ["+count+"] ["+folder.getContentCount()+"]")
+            System.err.println("Error ["+count+"] ["+folder.getContentCount()+"]")
             folder.moveChildCursorTo(count)            
           }
         }
