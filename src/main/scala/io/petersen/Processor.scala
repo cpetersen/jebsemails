@@ -5,6 +5,7 @@ import java.util.Vector
 import scala.util.control.NonFatal
 import scala.collection.immutable.StringOps
 
+// http://stackoverflow.com/questions/495741/iterating-over-java-collections-in-scala
 class IteratorWrapper[A](iter:java.util.Iterator[A]) {
   def foreach(f: A => Unit): Unit = {
     while(iter.hasNext){
@@ -13,6 +14,7 @@ class IteratorWrapper[A](iter:java.util.Iterator[A]) {
   }
 }
 
+// https://github.com/rjohnsondev/java-libpst
 class Processor(val folder : PSTFolder) {
   processFolder(folder, 0);
 
