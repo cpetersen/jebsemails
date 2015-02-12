@@ -11,7 +11,7 @@ So I thought, why not use the resulting text to train a Markov bot and put it on
 
 ## How do I use it
 
-You'll need Scala and Ruby. 
+You'll need Scala and Ruby. You'll also need to download and unpack [the pst files from Jeb's website](http://jebbushemails.com/email/search).
 
 ### Parse the PST files
 
@@ -39,6 +39,36 @@ The code takes all the emails from jeb@jeb.org (he uses other email addresses, b
 
 Ruby is used to generate the [Markov model](http://en.wikipedia.org/wiki/Markov_model). Specifically, I'm using the [marky_markov](https://github.com/zolrath/marky_markov) gem.
 
-mdfind -onlyin files -name pst
+This is ruby, so you'll need to bundle:
 
+```sh
+bundle install
+```
+
+Now you should be able to generate 100 random sentences by running the following from `bundle exec irb`
+
+```ruby
+require 'marky_markov'
+
+markov = MarkyMarkov::TemporaryDictionary.new
+markov.parse_file "email_bodies.txt"
+100.times do
+  puts markov.generate_n_sentences 1
+end
+```
+
+## ETC
+
+Find all the pst files in the './files' directory on OS X.
+
+```sh
+mdfind -onlyin files -name pst
+```
+
+Given a file containing email addresses, find the count of each unique email address. (There is some commented code for outputing email address.)
+
+```sh
 sort emails | uniq --count > unique
+```
+
+
