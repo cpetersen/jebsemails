@@ -8,6 +8,11 @@ Well, it turns out, quite a lot. Did you know [he might run for president](http:
 
 So I thought, why not use the resulting text to train a Markov bot and put it online? This is the code that generated the content which is being [posted on Twitter](https://twitter.com/jebsemails).
 
+I asked it if the Markov bot had any plans to run for president, it replied:
+
+ > Hurricane Floyd.
+
+ So, as you can see, it's keeping it's options open.
 
 ## How do I use it
 
