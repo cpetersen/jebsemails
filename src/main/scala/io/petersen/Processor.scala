@@ -5,17 +5,13 @@ import java.util.Vector
 import scala.util.control.NonFatal
 import scala.collection.immutable.StringOps
 
-// http://stackoverflow.com/questions/495741/iterating-over-java-collections-in-scala
-class IteratorWrapper[A](iter:java.util.Iterator[A]) {
-  def foreach(f: A => Unit): Unit = {
-    while(iter.hasNext){
-      f(iter.next)
-    }
-  }
-}
-
 // https://github.com/rjohnsondev/java-libpst
-class Processor(val folder : PSTFolder) {
+class Processor(val folder : PSTFolder, val searchEmailAddress : String) {
+  def this(folder : PSTFolder) {
+    this(folder, "");
+    println("\nNo search email given, printing all from addresses.")
+  }
+
   processFolder(folder, 0);
 
   implicit def iteratorToWrapper[T](iter:java.util.Iterator[T]):IteratorWrapper[T] = new IteratorWrapper[T](iter)
@@ -44,16 +40,11 @@ class Processor(val folder : PSTFolder) {
     if(folder.getContentCount() > 0) {
       var email : PSTMessage = folder.getNextChild().asInstanceOf[PSTMessage]
       while (email != null) {
-        // ORIGINAL
-        // printDepth(depth)
-        // println("From: "+email.getSubject())
-        // println(email.getBody())
-
-        // FIND EMAILS
-        // println(email.getSenderEmailAddress())
-
-        // PRINT BODIES
-        if(email.getSenderEmailAddress() == "jeb@jeb.org") {
+        if(searchEmailAddress == "") {
+          // FIND EMAILS
+          println(email.getSenderEmailAddress())
+        } else if(email.getSenderEmailAddress() == searchEmailAddress) {
+          // PRINT BODIES
           var print = true
           val stringOps = new StringOps(email.getBody())
           for(line <- stringOps.lines) {
