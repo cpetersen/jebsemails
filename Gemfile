@@ -1,3 +1,4 @@
-source 'http://rubygems.org'
+source "http://rubygems.org"
 
-gem 'marky_markov'
+gem "thor"
+gem "marky_markov"

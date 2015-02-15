@@ -4,9 +4,11 @@ GEM
     marky_markov (0.3.5)
       msgpack
     msgpack (0.5.11)
+    thor (0.19.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   marky_markov
+  thor
