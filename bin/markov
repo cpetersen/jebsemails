@@ -4,22 +4,45 @@ require "marky_markov"
 require "thor"
 
 class Markov < Thor
-  def from_emails
+  desc "from", "Print all from email addresses in all pst files"
+  def from
     find_files.each do |pst_file|
-      `java -jar target/scala-2.10/main-assembly-0.1.jar #{pst_file}`
+      shell_command("java -jar target/scala-2.10/main-assembly-0.1.jar #{pst_file}")
     end
   end
 
+  desc "bodies", "Print all from email bodies in all pst files from given addresses"
+  method_option :emails, type: :array, aliases: "-e", required: true
+  def bodies
+    find_files.each do |pst_file|
+      options[:emails].each do |email|
+        shell_command("java -jar target/scala-2.10/main-assembly-0.1.jar #{pst_file} #{email}")
+      end
+    end
+  end
+
+
   no_tasks do
+    def shell_command(command)
+      output = []
+      IO.popen(command).each do |line|
+        puts line.chomp
+        STDOUT.flush
+        output << line.chomp
+      end
+      output
+    end
+
     def find_files
       Dir.glob("**/*.pst")
     end
   end
 end
+Markov.start(ARGV)
 
 
-markov = MarkyMarkov::TemporaryDictionary.new
-markov.parse_file "output/bodies.txt"
-1000.times do
-  puts markov.generate_n_sentences 1
-end
+# markov = MarkyMarkov::TemporaryDictionary.new
+# markov.parse_file "output/bodies.txt"
+# 1000.times do
+#   puts markov.generate_n_sentences 1
+# end
