@@ -11,6 +11,6 @@ object MainApplication extends App {
     val pstFile : PSTFile = new PSTFile(args(0))
     val searchEmailAddress : String = args(1)
     System.err.println("["+args(0)+"] ["+searchEmailAddress+"]")
-    new Processor(pstFile.getRootFolder(), searchEmailAddress)
+    new Processor(pstFile.getRootFolder(), Some(searchEmailAddress))
   }
 }

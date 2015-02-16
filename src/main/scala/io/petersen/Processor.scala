@@ -6,9 +6,9 @@ import scala.util.control.NonFatal
 import scala.collection.immutable.StringOps
 
 // https://github.com/rjohnsondev/java-libpst
-class Processor(val folder : PSTFolder, val searchEmailAddress : String) {
+class Processor(val folder : PSTFolder, val maybeSearchEmailAddress : Option[String]) {
   def this(folder : PSTFolder) {
-    this(folder, "");
+    this(folder, None);
     println("\nNo search email given, printing all from addresses.")
   }
 
@@ -35,28 +35,18 @@ class Processor(val folder : PSTFolder, val searchEmailAddress : String) {
   }
 
   def printEmails(folder : PSTFolder, depth : Int) {
-    val Pattern = "(\\s*-+Original Message-+\\s*)".r
     var count : Int = 1
     if(folder.getContentCount() > 0) {
       var email : PSTMessage = folder.getNextChild().asInstanceOf[PSTMessage]
-      while (email != null) {
-        if(searchEmailAddress == "") {
+      while(email != null) {
+        maybeSearchEmailAddress match {
+        case Some(searchEmailAddress) =>
+          if(email.getSenderEmailAddress() == searchEmailAddress) {
+            printEmailBody(email)
+          }
+        case None =>
           // FIND EMAILS
           println(email.getSenderEmailAddress())
-        } else if(email.getSenderEmailAddress() == searchEmailAddress) {
-          // PRINT BODIES
-          var print = true
-          val stringOps = new StringOps(email.getBody())
-          for(line <- stringOps.lines) {
-            line match {
-              case Pattern(c) => print = false
-              case _ => {
-                if(print) {
-                  println(line)
-                }
-              }
-            }
-          }
         }
         try {
           email = folder.getNextChild().asInstanceOf[PSTMessage]
@@ -70,6 +60,24 @@ class Processor(val folder : PSTFolder, val searchEmailAddress : String) {
       }
     }
   }
+
+
+  def printEmailBody(email : PSTMessage) {
+    val Pattern = "(\\s*-+Original Message-+\\s*)".r
+    var print = true
+    val stringOps = new StringOps(email.getBody())
+    for(line <- stringOps.lines) {
+      line match {
+        case Pattern(c) => print = false
+        case _ => {
+          if(print) {
+            println(line)
+          }
+        }
+      }
+    }
+  }
+
 
   def printDepth(depth : Int) {
     for(a <- 1 until depth){
