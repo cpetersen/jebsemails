@@ -16,7 +16,7 @@ class Markov < Thor
   def bodies
     find_files.each do |pst_file|
       options[:emails].each do |email|
-        shell_command("java -jar target/scala-2.10/main-assembly-0.1.jar #{pst_file} #{email}")
+        shell_command("java -jar target/scala-2.10/main-assembly-0.1.jar #{pst_file} '#{email}'")
       end
     end
   end

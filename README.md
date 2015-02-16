@@ -46,6 +46,7 @@ If you want to find the most email addresses that appear the most frequently in 
 
 ```sh
 sort output/from.txt | uniq -c | sort -r > output/unique_from.txt
+head -3 output/unique_from.txt
 ```
 
 Now, it extract the bodies, use the following command:
@@ -66,3 +67,7 @@ And finally, you can generate some sentences:
 bundle exec ./bin/markov generate --count 5
 ```
 
+
+## TODO
+
+Add a buffer method to the CLI to automatically buffer tweets/facebook posts.
