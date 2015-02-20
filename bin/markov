@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require "buff"
 require "marky_markov"
 require "thor"
 
@@ -44,6 +45,27 @@ class Markov < Thor
     end
   end
 
+  desc "buffer FILE", "Using sentences in a saved file, add those sentences to the given buffer account/profiles"
+  method_option :token, type: :string, aliases: "-t", required: true
+  method_option :profiles, type: :array, aliases: "-p", required: true
+  def buffer(file)
+    client = Buff::Client.new(options[:token])
+    File.readlines(file).each do |line|
+      puts line
+      body = { text: line, profile_ids: options[:profiles] }
+      client.create_update(body: body)
+    end
+  end
+
+  desc "buffer_profiles", "Print the available profile ids"
+  method_option :token, type: :string, aliases: "-t", required: true
+  def buffer_profiles
+    client = Buff::Client.new(options[:token])
+    client.profiles.each do |profile|
+      puts "#{profile.formatted_service} #{profile.id} #{profile.service_username}"
+    end
+  end
+
   no_tasks do
     def shell_command(command)
       output = []
@@ -61,10 +83,3 @@ class Markov < Thor
   end
 end
 Markov.start(ARGV)
-
-
-# markov = MarkyMarkov::TemporaryDictionary.new
-# markov.parse_file "output/bodies.txt"
-# 1000.times do
-#   puts markov.generate_n_sentences 1
-# end

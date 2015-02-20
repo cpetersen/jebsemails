@@ -63,12 +63,14 @@ class Processor(val folder : PSTFolder, val maybeSearchEmailAddress : Option[Str
 
 
   def printEmailBody(email : PSTMessage) {
-    val Pattern = "(\\s*-+Original Message-+\\s*)".r
+    val Pattern1 = "(\\s*-+Original Message-+\\s*)".r
+    val Pattern2 = "\\*{30,}".r
     var print = true
     val stringOps = new StringOps(email.getBody())
     for(line <- stringOps.lines) {
       line match {
-        case Pattern(c) => print = false
+        case Pattern1(c) => print = false
+        case Pattern2(c) => print = false
         case _ => {
           if(print) {
             println(line)
