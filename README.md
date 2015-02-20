@@ -64,10 +64,24 @@ bundle exec ./bin/markov build --content output/bodies.txt
 And finally, you can generate some sentences:
 
 ```sh
-bundle exec ./bin/markov generate --count 5
+bundle exec ./bin/markov generate --count 5 > output/sentences.txt
 ```
 
+### Buffer your responses
 
-## TODO
+I use [buffer](https://bufferapp.com) to post to twitter at regular intervals. You will need your buffer token, which is left as an excercise for the user.
 
-Add a buffer method to the CLI to automatically buffer tweets/facebook posts.
+First, you can get the profile ids of the accounts you'd like to post to:
+
+```sh
+bundle exec markov buffer_profiles --token $BUFFER_TOKEN
+```
+
+Next, given the `sentences.txt` file we generated before, buffer those sentences to two buffer profiles:
+
+```sh
+bundle exec markov buffer output/sentences.txt --token $BUFFER_TOKEN --profiles PROFILE_ID1 PROFILE_ID2
+```
+
+That's it, you're Markov bot is now live.
+
